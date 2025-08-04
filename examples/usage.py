@@ -1,78 +1,66 @@
-from restapi_library import RestAPILibrary, BaseModel
+import json
+from restapi_client import RestAPILibrary, BaseModel
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict, Any, List
 
-# Define custom models
 @dataclass
-class UserModel(BaseModel):
-    """User model for API requests/responses"""
+class ObjectDOMModel(BaseModel):
     name: str
-    email: str
-    age: Optional[int] = None
+    data: Optional[Dict[str, Any]] = None
     
     def validate(self) -> bool:
-        """Custom validation"""
-        return "@" in self.email and len(self.name) > 0
+        """Custom validation for request body"""
+        return len(self.name) > 0
 
 @dataclass
-class PaymentModel(BaseModel):
-    """Payment model"""
-    amount: float
-    currency: str
-    user_id: int
+class ObjectModel(BaseModel):  # Removed inheritance from ObjectDOMModel for clarity
+    id: str
+    name: str
+    createdat: str  # Match API's camelCase field name
+    data: Optional[Dict[str, Any]] = None
     
     def validate(self) -> bool:
-        return self.amount > 0 and len(self.currency) == 3
+        """Custom validation for response model"""
+        return len(self.id) > 0 and len(self.name) > 0 and len(self.createdAt) > 0
+
+@dataclass
+class ObjectListModel(BaseModel):
+    """Model for API response containing a list of objects"""
+    items: List[ObjectDOMModel]
+    
+    def validate(self) -> bool:
+        """Custom validation for list model"""
+        return isinstance(self.items, list) and all(item.validate() for item in self.items)
 
 def main():
-    # Set Redis configuration (optional)
-    RestAPILibrary.set_redis_config({
-        "host": "localhost",
-        "port": 6379,
-        "db": 0,
-        "password": None
-    })
-    
-    # Register models
-    RestAPILibrary.register_model('UserModel', UserModel)
-    RestAPILibrary.register_model('PaymentModel', PaymentModel)
-    
-    # Initialize library with configuration
-    api = RestAPILibrary(
-        config_path="examples/config.json",
-        env_file="examples/.env"
-    )
-    
     try:
-        # Example 1: GET request with path parameters
-        user_response = api.api_payment.get_user(params={'user_id': 123})
-        print("User:", user_response)
-        
-        # Example 2: POST request with model
-        new_user = UserModel(name="John Doe", email="john@example.com", age=30)
-        create_response = api.api_payment.create_user(body=new_user)
-        print("Created user:", create_response)
-        
-        # Example 3: Using different API version
-        user_v2 = api.api_payment.get_user_v2(params={'user_id': 123})
-        print("User (v2):", user_v2)
-        
-        # Example 4: Custom headers and parameters
-        custom_response = api.api_payment.get_user(
-            params={'user_id': 456},
-            headers={'X-Custom-Header': 'value'},
-            timeout=60
+        # Register models
+        RestAPILibrary.register_model('ObjectDOMModel', ObjectDOMModel)
+        RestAPILibrary.register_model('ObjectModel', ObjectModel)
+        RestAPILibrary.register_model('ObjectListModel', ObjectListModel)
+
+        # Initialize library with configuration
+        api = RestAPILibrary(
+            config_path="./config.json",
+            env_file="./.env"
         )
-        print("Custom request:", custom_response)
-        
-        # Example 5: Error handling
-        try:
-            error_response = api.api_payment.get_user(params={'user_id': -1})
-        except Exception as e:
-            print(f"Error: {e}")
-        
+
+        # # Print start message in JSON
+        # print(json.dumps({"message": "Executing API calls... Config loaded successfully"}, indent=2))
+
+        # # GET request for getObjectByID with id=ff8081819782e69e019874d73ddf231f
+        # response = api.example_api.getObjectByID(params={'id': 'ff8081819782e69e019874d73ddf231f'})
+        # print(json.dumps({"object_by_id": response.to_dict()}, indent=2))
+
+        # Print start message in JSON
+        print(json.dumps({"message": "Executing API calls... Config loaded successfully"}, indent=2))
+
+        # GET request for getObjectsByIDs with id=3,5,10
+        response = api.example_api.objectsList()
+        print(json.dumps({"objects_by_ids": response.to_dict()}, indent=2))
+
     except Exception as e:
-        print(f"Failed to execute API calls: {e}")
+        print(json.dumps({"error": str(e)}, indent=2))
 
 if __name__ == "__main__":
     main()

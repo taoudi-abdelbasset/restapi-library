@@ -1,0 +1,52 @@
+{
+    "example-api": {
+        "base_url": "${API_BASE_URL}",
+        "default_version": "v1",
+        "endpoints": {
+            "v1": {
+                "objectsList": {
+                    "path": "/objects",
+                    "method": "GET",
+                    "cache": {
+                        "enabled": true,
+                        "ttl": 300
+                    },
+                    "response_model": "ObjectListModel",
+                    "auth_required": false
+                },
+                "getObjectByID": {
+                    "path": "/objects/{id}",
+                    "method": "GET",
+                    "params": {
+                        "id": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    "response_model": "ObjectModel",
+                    "auth_required": false
+                },
+                "CreateObject": {
+                    "path": "/objects",
+                    "method": "POST",
+                    "body_required": true,
+                    "body_model": "ObjectDOMModel",
+                    "response_model": "ObjectModel",
+                    "auth_required": false
+                },
+                "getObjectsByIDs": {
+                    "path": "/objects",
+                    "method": "GET",
+                    "params": {
+                        "id": {
+                            "type": "list[string]",
+                            "required": true
+                        }
+                    },
+                    "response_model": "ObjectListModel",
+                    "auth_required": false
+                }
+            }
+        }
+    }
+}
