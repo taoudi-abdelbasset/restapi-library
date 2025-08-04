@@ -1,0 +1,15 @@
+
+.src-tmp
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+*.egg-info/
+.pytest_cache/
+*.log
+dist/
+build/
+*.swp
+.DS_Store
