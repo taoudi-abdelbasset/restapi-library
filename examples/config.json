@@ -1,6 +1,6 @@
 {
     "example-api": {
-        "base_url": "${API_BASE_URL}",
+        "base_url": "${API_BASE_URL:https://api.restful-api.dev/}",
         "default_version": "v1",
         "endpoints": {
             "v1": {

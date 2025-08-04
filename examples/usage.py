@@ -1,5 +1,5 @@
 import json
-from restapi_client import RestAPILibrary, BaseModel
+from restapi_library import RestAPILibrary, BaseModel
 from dataclasses import dataclass
 from typing import Optional, Dict, Any, List
 

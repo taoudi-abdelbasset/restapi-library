@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="restapi-library",
-    version="1.0.1",  # Incremented version for updates
+    version="0.0.2",  # Incremented version for updates
     author="Taoudi Abdelbasset",
     author_email="taoudiabdu@gmail.com",
     description="A comprehensive REST API client library with advanced features",
@@ -46,7 +46,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "restapi-cli=restapi_client.cli:main",  # Updated to match package structure
+            "restapi-cli=restapi_library.cli:main",  # Updated to match package structure
         ],
     },
     project_urls={
